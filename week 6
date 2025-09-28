@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Event Handling & Interactive Elements</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbc;
+            --accent-color: #ff7e5f;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+            --card-bg: #fff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary-color: #6b8cbc;
+            --secondary-color: #4a6fa5;
+            --text-color: #f0f0f0;
+            --bg-color: #1a1a2e;
+            --card-bg: #16213e;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .dark-mode h1, .dark-mode h2, .dark-mode h3 {
+            color: var(--secondary-color);
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+        }
+
+        .btn-accent:hover {
+            background-color: #ff6b4a;
+        }
+
+        .counter-display {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 1rem 0;
+            color: var(--primary-color);
+        }
+
+        .counter-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .dark-mode .faq-item {
+            border-color: #444;
+        }
+
+        .faq-question {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer.active {
+            padding: 1rem;
+            max-height: 500px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--card-bg);
+            min-width: 160px;
+            box-shadow: var(--shadow);
+            z-index: 1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: var(--text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1rem;
+        }
+
+        .dark-mode .tabs {
+            border-bottom-color: #444;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--accent-color);
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 1rem 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input, textarea {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .dark-mode input, .dark-mode textarea {
+            background-color: #2a2a3e;
+            border-color: #444;
+            color: var(--text-color);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .success {
+            color: #2ecc71;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .form-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .dark-mode .form-message.success {
+            background-color: #1e3a2e;
+            color: #8bc34a;
+            border-color: #2e7d32;
+        }
+
+        .dark-mode .form-message.error {
+            background-color: #3a1e1e;
+            color: #e57373;
+            border-color: #c62828;
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .highlight {
+            background-color: rgba(255, 255, 0, 0.3);
+            transition: background-color 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .counter-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-bottom: none;
+                border-left: 3px solid transparent;
+            }
+            
+            .tab.active {
+                border-bottom: none;
+                border-left: 3px solid var(--accent-color);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>JavaScript Event Handling & Interactive Elements</h1>
+        </div>
+    </header>
+
+    <div class="mode-toggle">
+        <button id="modeToggle">🌙 Dark Mode</button>
+    </div>
+
+    <div class="container">
+        <!-- Event Handling Section -->
+        <section class="section">
+            <h2>Event Handling Examples</h2>
+            <p>Try these interactive elements to see JavaScript event handling in action:</p>
+            
+            <div class="counter-buttons">
+                <button id="clickBtn">Click Me!</button>
+                <button id="mouseoverBtn">Hover Over Me</button>
+                <button id="keypressBtn">Click Then Press a Key</button>
+                <button id="doubleClickBtn">Double Click Me</button>
+            </div>
+            
+            <div id="eventMessage" class="counter-display">Interact with the buttons above</div>
+        </section>
+
+        <!-- Interactive Elements Section -->
+        <section class="section">
+            <h2>Interactive Elements</h2>
+            
+            <!-- Counter Game -->
+            <div class="interactive-element">
+                <h3>Counter Game</h3>
+                <div class="counter-display" id="counterValue">0</div>
+                <div class="counter-buttons">
+                    <button id="incrementBtn">+</button>
+                    <button id="decrementBtn">-</button>
+                    <button id="resetBtn" class="btn-accent">Reset</button>
+                </div>
+            </div>
+            
+            <!-- FAQ Section -->
+            <div class="interactive-element">
+                <h3>FAQ Section</h3>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is JavaScript event handling?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>JavaScript event handling allows you to execute code in response to user interactions like clicks, mouse movements, keyboard input, and more. This makes web pages dynamic and interactive.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What are event listeners?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Event listeners are functions that wait for a specific event to occur on an element, then execute a callback function when that event happens.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is DOM manipulation?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>DOM manipulation refers to changing the structure, style, or content of a web page using JavaScript after it has loaded.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dropdown Menu -->
+            <div class="interactive-element">
+                <h3>Dropdown Menu</h3>
+                <div class="dropdown">
+                    <button>Select an Option</button>
+                    <div class="dropdown-content">
+                        <a href="#" data-value="option1">Option 1</a>
+                        <a href="#" data-value="option2">Option 2</a>
+                        <a href="#" data-value="option3">Option 3</a>
+                    </div>
+                </div>
+                <p id="dropdownResult" style="margin-top: 1rem;">No option selected</p>
+            </div>
+            
+            <!-- Tabbed Interface -->
+            <div class="interactive-element">
+                <h3>Tabbed Interface</h3>
+                <div class="tabs">
+                    <div class="tab active" data-tab="tab1">Tab 1</div>
+                    <div class="tab" data-tab="tab2">Tab 2</div>
+                    <div class="tab" data-tab="tab3">Tab 3</div>
+                </div>
+                <div class="tab-content active" id="tab1">
+                    <h4>Content for Tab 1</h4>
+                    <p>This is the content for the first tab. You can put any content here - text, images, forms, etc.</p>
+                </div>
+                <div class="tab-content" id="tab2">
+                    <h4>Content for Tab 2</h4>
+                    <p>This is the content for the second tab. Each tab can have completely different content.</p>
+                </div>
+                <div class="tab-content" id="tab3">
+                    <h4>Content for Tab 3</h4>
+                    <p>This is the content for the third tab. Tabbed interfaces are great for organizing content.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Form Validation Section -->
+        <section class="section">
+            <h2>Form Validation</h2>
+            <form id="validationForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name">
+                    <div class="error" id="nameError">Please enter a valid name (letters and spaces only)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email">
+                    <div class="error" id="emailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
+                    <div class="error" id="passwordError">Password must be at least 8 characters with uppercase, lowercase, and a number</div>
+                    <div class="success" id="passwordSuccess">Password strength: Good</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password">
+                    <div class="error" id="confirmPasswordError">Passwords do not match</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Enter your message"></textarea>
+                    <div class="error" id="messageError">Message must be between 10 and 500 characters</div>
+                </div>
+                
+                <button type="submit" class="btn-accent">Submit Form</button>
+                
+                <div class="form-message success" id="formSuccess">
+                    Form submitted successfully!
+                </div>
+                
+                <div class="form-message error" id="formError">
+                    Please fix the errors above before submitting.
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // Part 1: JavaScript Event Handling
+
+        // Get DOM elements for event handling section
+        const clickBtn = document.getElementById('clickBtn');
+        const mouseoverBtn = document.getElementById('mouseoverBtn');
+        const keypressBtn = document.getElementById('keypressBtn');
+        const doubleClickBtn = document.getElementById('doubleClickBtn');
+        const eventMessage = document.getElementById('eventMessage');
+
+        // Click event
+        clickBtn.addEventListener('click', function() {
+            eventMessage.textContent = 'Button clicked!';
+            eventMessage.classList.add('highlight');
+            setTimeout(() => {
+                eventMessage.classList.remove('highlight');
+            }, 500);
+        });
+
+        // Mouseover event
+        mouseoverBtn.addEventListener('mouseover', function() {
+            eventMessage.textContent = 'Mouse is over the button!';
+        });
+
+        mouseoverBtn.addEventListener('mouseout', function() {
+            eventMessage.textContent = 'Mouse left the button';
+        });
+
+        // Keypress event
+        let keypressActive = false;
+        keypressBtn.addEventListener('click', function() {
+            keypressActive = true;
+            eventMessage.textContent = 'Now press any key...';
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (keypressActive) {
+                eventMessage.textContent = `You pressed: ${e.key}`;
+                keypressActive = false;
+            }
+        });
+
+        // Double click event
+        doubleClickBtn.addEventListener('dblclick', function() {
+            eventMessage.textContent = 'Double click detected!';
+        });
+
+        // Part 2: Building Interactive Elements
+
+        // Counter Game
+        const counterValue = document.getElementById('counterValue');
+        const incrementBtn = document.getElementById('incrementBtn');
+        const decrementBtn = document.getElementById('decrementBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        let count = 0;
+
+        incrementBtn.addEventListener('click', function() {
+            count++;
+            counterValue.textContent = count;
+            updateCounterColor();
+        });
+
+        decrementBtn.addEventListener('click', function() {
+            count--;
+            counterValue.textContent = count;
+            updateCounterColor();
+        });
+
+        resetBtn.addEventListener('click', function() {
+            count = 0;
+            counterValue.textContent = count;
+            updateCounterColor();
+        });
+
+        function updateCounterColor() {
+            if (count > 0) {
+                counterValue.style.color = '#2ecc71'; // Green
+            } else if (count < 0) {
+                counterValue.style.color = '#e74c3c'; // Red
+            } else {
+                counterValue.style.color = 'var(--primary-color)'; // Default
+            }
+        }
+
+        // FAQ Section
+        const faqQuestions = document.querySelectorAll('.faq-question');
+
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const isActive = answer.classList.contains('active');
+                
+                // Close all answers
+                document.querySelectorAll('.faq-answer').forEach(ans => {
+                    ans.classList.remove('active');
+                });
+                
+                // Update all icons
+                document.querySelectorAll('.faq-question span:last-child').forEach(icon => {
+                    icon.textContent = '+';
+                });
+                
+                // If the clicked answer wasn't active, open it
+                if (!isActive) {
+                    answer.classList.add('active');
+                    this.querySelector('span:last-child').textContent = '-';
+                }
+            });
+        });
+
+        // Dropdown Menu
+        const dropdownLinks = document.querySelectorAll('.dropdown-content a');
+        const dropdownResult = document.getElementById('dropdownResult');
+
+        dropdownLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const value = this.getAttribute('data-value');
+                dropdownResult.textContent = `Selected: ${value}`;
+                
+                // Update dropdown button text
+                const dropdownBtn = this.closest('.dropdown').querySelector('button');
+                dropdownBtn.textContent = this.textContent;
+            });
+        });
+
+        // Tabbed Interface
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                this.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Dark/Light Mode Toggle
+        const modeToggle = document.getElementById('modeToggle');
+        const body = document.body;
+
+        modeToggle.addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                modeToggle.textContent = '☀️ Light Mode';
+            } else {
+                modeToggle.textContent = '🌙 Dark Mode';
+            }
+        });
+
+        // Part 3: Form Validation
+
+        const validationForm = document.getElementById('validationForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const messageInput = document.getElementById('message');
+
+        // Real-time validation
+        nameInput.addEventListener('input', validateName);
+        emailInput.addEventListener('input', validateEmail);
+        passwordInput.addEventListener('input', validatePassword);
+        confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+        messageInput.addEventListener('input', validateMessage);
+
+        // Form submission
+        validationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate all fields
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+            const isConfirmPasswordValid = validateConfirmPassword();
+            const isMessageValid = validateMessage();
+            
+            // If all valid, show success message
+            if (isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isMessageValid) {
+                document.getElementById('formSuccess').style.display = 'block';
+                document.getElementById('formError').style.display = 'none';
+                
+                // In a real application, you would submit the form here
+                console.log('Form is valid and would be submitted');
+            } else {
+                document.getElementById('formSuccess').style.display = 'none';
+                document.getElementById('formError').style.display = 'block';
+            }
+        });
+
+        // Validation functions
+        function validateName() {
+            const nameValue = nameInput.value.trim();
+            const nameError = document.getElementById('nameError');
+            const nameRegex = /^[a-zA-Z\s]{2,}$/;
+            
+            if (nameValue === '') {
+                showError(nameInput, nameError, 'Name is required');
+                return false;
+            } else if (!nameRegex.test(nameValue)) {
+                showError(nameInput, nameError, 'Please enter a valid name (letters and spaces only)');
+                return false;
+            } else {
+                showSuccess(nameInput, nameError);
+                return true;
+            }
+        }
+
+        function validateEmail() {
+            const emailValue = emailInput.value.trim();
+            const emailError = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (emailValue === '') {
+                showError(emailInput, emailError, 'Email is required');
+                return false;
+            } else if (!emailRegex.test(emailValue)) {
+                showError(emailInput, emailError, 'Please enter a valid email address');
+                return false;
+            } else {
+                showSuccess(emailInput, emailError);
+                return true;
+            }
+        }
+
+        function validatePassword() {
+            const passwordValue = passwordInput.value;
+            const passwordError = document.getElementById('passwordError');
+            const passwordSuccess = document.getElementById('passwordSuccess');
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            
+            if (passwordValue === '') {
+                showError(passwordInput, passwordError, 'Password is required');
+                passwordSuccess.style.display = 'none';
+                return false;
+            } else if (!passwordRegex.test(passwordValue)) {
+                showError(passwordInput, passwordError, 'Password must be at least 8 characters with uppercase, lowercase, and a number');
+                passwordSuccess.style.display = 'none';
+                return false;
+            } else {
+                showSuccess(passwordInput, passwordError);
+                passwordSuccess.style.display = 'block';
+                return true;
+            }
+        }
+
+        function validateConfirmPassword() {
+            const confirmPasswordValue = confirmPasswordInput.value;
+            const passwordValue = passwordInput.value;
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            
+            if (confirmPasswordValue === '') {
+                showError(confirmPasswordInput, confirmPasswordError, 'Please confirm your password');
+                return false;
+            } else if (confirmPasswordValue !== passwordValue) {
+                showError(confirmPasswordInput, confirmPasswordError, 'Passwords do not match');
+                return false;
+            } else {
+                showSuccess(confirmPasswordInput, confirmPasswordError);
+                return true;
+            }
+        }
+
+        function validateMessage() {
+            const messageValue = messageInput.value.trim();
+            const messageError = document.getElementById('messageError');
+            
+            if (messageValue === '') {
+                showError(messageInput, messageError, 'Message is required');
+                return false;
+            } else if (messageValue.length < 10) {
+                showError(messageInput, messageError, 'Message must be at least 10 characters');
+                return false;
+            } else if (messageValue.length > 500) {
+                showError(messageInput, messageError, 'Message must be less than 500 characters');
+                return false;
+            } else {
+                showSuccess(messageInput, messageError);
+                return true;
+            }
+        }
+
+        // Helper functions for showing error/success states
+        function showError(input, errorElement, message) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            input.style.borderColor = '#e74c3c';
+        }
+
+        function showSuccess(input, errorElement) {
+            errorElement.style.display = 'none';
+            input.style.borderColor = '#2ecc71';
+        }
+    </script>
+</body>
+</html>
